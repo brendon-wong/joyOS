@@ -3,6 +3,25 @@ import imutils
 import cv2
 from keras.models import load_model
 import numpy as np
+import atexit
+
+
+# Display emotion log after program exists
+def exitProgram():
+    # print average of list from each emotion in database
+    #print(userEmotion)
+    for key in userEmotion:
+        userEmotion[key] = sum(userEmotion[key]) / len(userEmotion[key])
+    #print(userEmotion)
+    print("Emotion Percentage")
+    print("---------------------------------")
+    print("Anger: " + "{:.2f}%".format(userEmotion["angry"] * 100))
+    print("Disgust: " + "{:.2f}%".format(userEmotion["disgust"] * 100))
+    print("Scared: " + "{:.2f}%".format(userEmotion["scared"] * 100))
+    print("Happy: " + "{:.2f}%".format(userEmotion["happy"] * 100))
+    print("Sad: " + "{:.2f}%".format(userEmotion["sad"] * 100))
+    print("Surprised: " + "{:.2f}%".format(userEmotion["surprised"] * 100))
+    print("Neutral: " + "{:.2f}%".format(userEmotion["neutral"] * 100))
 
 # parameters for loading data and images
 detection_model_path = 'emotion_models/haarcascade_frontalface_default.xml'
@@ -15,6 +34,16 @@ emotion_classifier = load_model(emotion_model_path, compile=False)
 EMOTIONS = ["angry" ,"disgust","scared", "happy", "sad", "surprised",
  "neutral"]
 
+# User Emotion Database
+userEmotion = {
+    'angry' : [],
+    'disgust' : [],
+    'scared' : [],
+    'happy' : [],
+    'sad' : [],
+    'surprised' : [],
+    'neutral' : []
+}
 
 # starting video streaming
 cv2.namedWindow('your_face')
@@ -22,7 +51,7 @@ camera = cv2.VideoCapture(0)
 while True:
     frame = camera.read()[1]
     #reading the frame
-    frame = imutils.resize(frame,width=400)
+    frame = imutils.resize(frame,width=200)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_detection.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)
     
@@ -48,7 +77,8 @@ while True:
 
  
     for (i, (emotion, prob)) in enumerate(zip(EMOTIONS, preds)):
-                # construct the label text
+                userEmotion[emotion].append(prob)
+                # construct the label text               
                 text = "{}: {:.2f}%".format(emotion, prob * 100)
                 w = int(prob * 300)
                 cv2.rectangle(canvas, (7, (i * 35) + 5),
@@ -68,3 +98,4 @@ while True:
 
 camera.release()
 cv2.destroyAllWindows()
+atexit.register(exitProgram)
