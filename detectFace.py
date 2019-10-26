@@ -1,9 +1,9 @@
 import numpy as np
 import cv2
-
+# path : /Users/uriyahannruiz/Documents/CalHacks6/emotionai/venv/cascades/data/haarcascade_frontalface_alt2.xml
 # cv2.__file__ : /Users/uriyahannruiz/Documents/devProjects/env/faceRec_env/lib/python2.7/site-packages/cv2/cv2.so
 # root: /Users/uriyahannruiz/Documents/devProjects/env/faceRec_env/lib/python2.7/site-packages/cv2/
-faceCascade =  cv2.CascadeClassifier('cascades/data/haarcascade_frontalface_alt2.xml')
+faceCascade =  cv2.CascadeClassifier('/Users/uriyahannruiz/Documents/CalHacks6/emotionai/venv/cascades/data/haarcascade_frontalface_alt2.xml')
 capture = cv2.VideoCapture(0)
 while (True):
     ret,frame = capture.read()
