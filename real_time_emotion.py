@@ -28,6 +28,7 @@ while True:
     
     canvas = np.zeros((250, 300, 3), dtype="uint8")
     frameClone = frame.copy()
+    preds = []
     if len(faces) > 0:
         faces = sorted(faces, reverse=True,
         key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]
