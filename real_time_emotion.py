@@ -4,11 +4,6 @@ import cv2
 from keras.models import load_model
 import numpy as np
 
-
-import os
-dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname, 'relative/path/to/file/you/want')
-
 # parameters for loading data and images
 detection_model_path = 'emotion_models/haarcascade_frontalface_default.xml'
 emotion_model_path = 'emotion_models/_mini_XCEPTION.106-0.65.hdf5'
