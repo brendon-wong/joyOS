@@ -1,3 +1,5 @@
-numpy==1.16.5
-opencv-python==4.1.1.26
-Pillow==6.2.1
+numpy
+opencv-python
+keras
+imutils
+tensorflow
