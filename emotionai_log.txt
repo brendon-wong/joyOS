@@ -1,0 +1,12 @@
+Session start: Sat Oct 26 21:44:22 2019
+Smile(s): 2
+Elapsed time: 0 hour(s) 0 minute(s) 6 second(s)
+Session end: Sat Oct 26 21:44:28 2019
+
+
+Session start: Sat Oct 26 21:44:43 2019
+Smile(s): 1
+Elapsed time: 0 hour(s) 0 minute(s) 4 second(s)
+Session end: Sat Oct 26 21:44:47 2019
+
+

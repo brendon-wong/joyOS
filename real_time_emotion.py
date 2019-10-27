@@ -4,12 +4,22 @@ import cv2
 from keras.models import load_model
 import numpy as np
 import atexit
-from time import time
-
-smile_window_min, duration, smile_count, t0 = 5, 5, 0, time()
+from time import time, ctime
 
 # Display emotion log after program exists
 def exitProgram():
+
+    session_end = time()
+    elapsed_time = session_end - session_start
+    sec = elapsed_time % 60
+    mins = ((elapsed_time - sec) % 3600) // 60
+    hrs = (elapsed_time - 60*mins - sec) // 60
+
+    f.write("Smile(s): %d\r\n" % (smile_count))
+    f.write("Elapsed time: %d hour(s) %d minute(s) %d second(s)\r\n" % (hrs, mins, sec))
+    f.write("Session end: %s\r\n" % (ctime(session_end)))
+    f.write("\n")
+
     # print average of list from each emotion in database
     #print(userEmotion)
     for key in userEmotion:
@@ -51,7 +61,10 @@ userEmotion = {
 cv2.namedWindow('your_face')
 camera = cv2.VideoCapture(0)
 
-smile_start, currently_smiling = -1, False
+smile_count, smile_start, currently_smiling = 0, -1, False
+f = open("emotionai_log.txt","a+")
+session_start = time()
+f.write("Session start: %s\r\n" % (ctime(session_start)))
 
 while True:
     frame = camera.read()[1]
@@ -91,6 +104,7 @@ while True:
                             smile_count += 1
                             currently_smiling = True
                             print(smile_count)
+
                     else:
                         smile_start = -1
                         currently_smiling = False
