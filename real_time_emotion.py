@@ -4,7 +4,9 @@ import cv2
 from keras.models import load_model
 import numpy as np
 import atexit
+from time import time
 
+smile_window_min, duration, smile_count, t0 = 5, 5, 0, time()
 
 # Display emotion log after program exists
 def exitProgram():
@@ -48,13 +50,16 @@ userEmotion = {
 # starting video streaming
 cv2.namedWindow('your_face')
 camera = cv2.VideoCapture(0)
+
+smile_start, currently_smiling = -1, False
+
 while True:
     frame = camera.read()[1]
     #reading the frame
-    frame = imutils.resize(frame,width=200)
+    frame = imutils.resize(frame,width=600)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_detection.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)
-    
+    faces = face_detection.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(120,120),flags=cv2.CASCADE_SCALE_IMAGE)
+
     canvas = np.zeros((250, 300, 3), dtype="uint8")
     frameClone = frame.copy()
     preds = []
@@ -69,16 +74,28 @@ while True:
         roi = roi.astype("float") / 255.0
         roi = img_to_array(roi)
         roi = np.expand_dims(roi, axis=0)
-        
-        
+
+
         preds = emotion_classifier.predict(roi)[0]
         emotion_probability = np.max(preds)
         label = EMOTIONS[preds.argmax()]
 
- 
     for (i, (emotion, prob)) in enumerate(zip(EMOTIONS, preds)):
                 userEmotion[emotion].append(prob)
-                # construct the label text               
+
+                if emotion == "happy":
+                    if prob > 0.7:
+                        if smile_start == -1:
+                            smile_start = time()
+                        elif time() - smile_start > 0.5 and not currently_smiling:
+                            smile_count += 1
+                            currently_smiling = True
+                            print(smile_count)
+                    else:
+                        smile_start = -1
+                        currently_smiling = False
+
+                # construct the label text
                 text = "{}: {:.2f}%".format(emotion, prob * 100)
                 w = int(prob * 300)
                 cv2.rectangle(canvas, (7, (i * 35) + 5),
