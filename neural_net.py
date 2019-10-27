@@ -1,0 +1,142 @@
+from keras.preprocessing.image import img_to_array
+import imutils
+import cv2
+from keras.models import load_model
+import numpy as np
+import atexit
+from time import time, ctime
+import random
+
+
+# # Display emotion log after program exists
+# def exitProgram():
+# 
+#     session_end = time()
+#     elapsed_time = session_end - session_start
+#     sec = elapsed_time % 60
+#     mins = ((elapsed_time - sec) % 3600) // 60
+#     hrs = (elapsed_time - 60*mins - sec) // 60
+# 
+#     f.write("Smile(s): %d\r\n" % (smile_count))
+#     f.write("Elapsed time: %d hour(s) %d minute(s) %d second(s)\r\n" % (hrs, mins, sec))
+#     f.write("Session end: %s\r\n" % (ctime(session_end)))
+#     f.write("\n")
+# 
+#     # print average of list from each emotion in database
+#     #print(userEmotion)
+#     for key in userEmotion:
+#         userEmotion[key] = sum(userEmotion[key]) / len(userEmotion[key])
+#     #print(userEmotion)
+#     print("Emotion Percentage")
+#     print("---------------------------------")
+#     print("Anger: " + "{:.2f}%".format(userEmotion["angry"] * 100))
+#     print("Disgust: " + "{:.2f}%".format(userEmotion["disgust"] * 100))
+#     print("Scared: " + "{:.2f}%".format(userEmotion["scared"] * 100))
+#     print("Happy: " + "{:.2f}%".format(userEmotion["happy"] * 100))
+#     print("Sad: " + "{:.2f}%".format(userEmotion["sad"] * 100))
+#     print("Surprised: " + "{:.2f}%".format(userEmotion["surprised"] * 100))
+#     print("Neutral: " + "{:.2f}%".format(userEmotion["neutral"] * 100))
+
+# parameters for loading data and images
+detection_model_path = 'emotion_models/haarcascade_frontalface_default.xml'
+emotion_model_path = 'emotion_models/_mini_XCEPTION.106-0.65.hdf5'
+
+# hyper-parameters for bounding boxes shape
+# loading models
+face_detection = cv2.CascadeClassifier(detection_model_path)
+emotion_classifier = load_model(emotion_model_path, compile=False)
+EMOTIONS = ["angry" ,"disgust","scared", "happy", "sad", "surprised",
+ "neutral"]
+
+# User Emotion Database
+userEmotion = {
+    'angry' : [],
+    'disgust' : [],
+    'scared' : [],
+    'happy' : [],
+    'sad' : [],
+    'surprised' : [],
+    'neutral' : []
+}
+
+# starting video streaming
+#  cv2.namedWindow('your_face')
+# camera = cv2.VideoCapture(0)
+
+#  smile_count, smile_start, currently_smiling = 0, -1, False
+#  f = open("emotionai_log.txt","a+")
+# session_start = time()
+#  f.write("Session start: %s\r\n" % (ctime(session_start)))
+
+# while True:
+    # frame = camera.read()[1]
+    # reading the frame
+def label_image(image):
+    frame = image
+    frame = imutils.resize(frame,width=600)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_detection.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(120,120),flags=cv2.CASCADE_SCALE_IMAGE)
+
+    canvas = np.zeros((250, 600, 3), dtype="uint8")
+    frameClone = frame.copy()
+    preds = []
+    if len(faces) > 0:
+        faces = sorted(faces, reverse=True,
+        key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]
+        (fX, fY, fW, fH) = faces
+        # Extract the ROI of the face from the grayscale image, resize it to a fixed 48x48 pixels, and then prepare
+        # the ROI for classification via the CNN
+        roi = gray[fY:fY + fH, fX:fX + fW]
+        roi = cv2.resize(roi, (48, 48))
+        roi = roi.astype("float") / 255.0
+        roi = img_to_array(roi)
+        roi = np.expand_dims(roi, axis=0)
+
+
+        preds = emotion_classifier.predict(roi)[0]
+        emotion_probability = np.max(preds)
+        label = EMOTIONS[preds.argmax()]
+        cv2.putText(frameClone, label, (fX, fY - 10),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+        cv2.rectangle(frameClone, (fX, fY), (fX + fW, fY + fH),
+                      (0, 0, 255), 2)
+
+    for (i, (emotion, prob)) in enumerate(zip(EMOTIONS, preds)):
+                userEmotion[emotion].append(prob)
+
+                # if emotion == "happy":
+                #     if prob > 0.7:
+                #         if smile_start == -1:
+                #             smile_start = time()
+                #         elif time() - smile_start > 0.5 and not currently_smiling:
+                #             smile_count += 1
+                #             currently_smiling = True
+                #             print(smile_count)
+                # 
+                #     else:
+                #         smile_start = -1
+                #         currently_smiling = False
+
+                # construct the label text
+                text = "{}: {:.2f}%".format(emotion, prob * 100)
+                w = int(prob * 600)
+                cv2.rectangle(canvas, (7, (i * 35) + 5),
+                (w, (i * 35) + 35), (0, 0, 255), -1)
+                cv2.putText(canvas, text, (10, (i * 35) + 23),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+                (255, 255, 255), 2)
+
+    # return frameClone
+    numpy_vertical = np.vstack((frameClone, canvas))
+    # numpy_horizontal = np.hstack((image, grey_3_channel))
+    # numpy_vertical_concat = np.concatenate((image, grey_3_channel), axis=0)
+    # numpy_horizontal_concat = np.concatenate((image, grey_3_channel), axis=1)
+    return numpy_vertical                         
+#     cv2.imshow('your_face', frameClone)
+#     cv2.imshow("Probabilities", canvas)
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+# 
+# camera.release()
+# cv2.destroyAllWindows()
+# atexit.register(exitProgram)
