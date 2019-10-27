@@ -97,9 +97,9 @@ def label_image(image):
         emotion_probability = np.max(preds)
         label = EMOTIONS[preds.argmax()]
         cv2.putText(frameClone, label, (fX, fY - 10),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 170, 240), 2)
         cv2.rectangle(frameClone, (fX, fY), (fX + fW, fY + fH),
-                      (0, 0, 255), 2)
+                      (0, 170, 240), 2)
 
     for (i, (emotion, prob)) in enumerate(zip(EMOTIONS, preds)):
                 userEmotion[emotion].append(prob)
@@ -121,7 +121,7 @@ def label_image(image):
                 text = "{}: {:.2f}%".format(emotion, prob * 100)
                 w = int(prob * 600)
                 cv2.rectangle(canvas, (7, (i * 35) + 5),
-                (w, (i * 35) + 35), (0, 0, 255), -1)
+                (w, (i * 35) + 35), (0, 170, 240), -1)
                 cv2.putText(canvas, text, (10, (i * 35) + 23),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (255, 255, 255), 2)
