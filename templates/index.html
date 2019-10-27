@@ -1,60 +1,135 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>joyOS</title>
-  </head>
-  <body>
-    <h1> joyOS <img src="static/smile.jpg" width="100" alt="Happy face" align="middle"> </h1>
-    <h2>Goal:</h2>
-    <p>I want to <em> smile </em> <input value="" size="8"></input> time(s) every
-      <input value="" size="8"></input> minutes.
-    </p>
-    <h2>Video Feed</h2>
-    <img id="video" src="{{ url_for('video_feed') }}">
-    <br>
-    <h2>Log:</h2>
-    <textarea rows="20" cols="60"> </textarea>
-    <br> <br> <br>
-    <button class="button" id="start">Start Session</button>
-    <button class="button" id="end">End Session</button>
-  </body>
 
-  <style>
-    body {
-      font-family: "Noto Sans", sans-serif;
-    }
-    h1 {
-      font-family: "Gill Sans", sans-serif;
-    }
+<head>
+  <meta charset="utf-8">
+  <title>joyOS</title>
+</head>
 
-    input {
-      text-align: center;
-    }
+<div id="navbar">
+  <h1> joyOS </h1> <img style="margin-left:12px" id="navbar" src="static/smile.png" width="100" alt="Happy face" align="middle">
+</div>
 
-    .button {
-      border: none;
-      color: white;
-      padding: 15px 25px;
-      text-align: center;
-      font-size: 16px;
-      cursor: pointer;
-    }
+<body id="app-container">
+  <!-- <h2>Goal</h2> -->
+  <div id="input-container">
+        I want to smile <input class="input-bar" id="new-goal" type="text" placeholder="many"> times every <input class="input-bar" id="new-goal" type="text" placeholder="few"> minutes
+  </div>  
+  
+  <h2>Video Feed</h2>
+  <img id="video" src="{{ url_for('video_feed') }}">
+  <br>
+  <h2>Log:</h2>
+  <textarea rows="20" cols="60"> </textarea>
+  <br> <br> <br>
+  <button class="button" id="start">Start Session</button>
+  <button class="button" id="end">Kill Joy</button>
+</body>
 
-    #start {
-      background-color: rgb(60, 179, 113)
-    }
-    #start:hover {
-      background-color: rgb(60, 179, 113, 0.7);
-    }
+<style>
+  
+  #app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    flex-direction: column;
+  }
+  
+  #navbar {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-areas:
+      "a b";
+  }
 
-    #end {
-      background-color: rgb(255, 99, 71);
-    }
-    #end:hover {
-      background-color: rgb(255, 99, 71, 0.7);
-    }
+  html {
+    /* Default text styling */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 34px;
+    /* Dark grey and the answer to the ultimate question */
+    color: #424242;
+    /* Modern light grey background */
+    background-color: #f9f9f9;
+  }
 
-  </style>
+  body {
+    font-family: "Roboto", sans-serif;
+  }
+
+  h1 {
+    font-size: 48px;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  h2 {
+    font-size: 34px;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  .input-bar {
+    border: none;
+  	outline: none;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #42424280;
+    color: #424242;
+    text-align: center;
+  	width: 100px;
+  	height: 34px;
+  	font-size: 34px;
+  	font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+  }
+
+  .input-bar:focus {
+    outline: none;
+  }
+
+  .input-bar::placeholder {
+  	color: black;
+  	opacity: 0.5;
+  }
+
+  .input-bar:hover::-webkit-input-placeholder {
+    opacity: 0.75;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .input-bar:focus::-webkit-input-placeholder {
+  	transition: opacity 0.5s ease-in-out;
+  	opacity: 0;
+  }
+
+  input {
+    text-align: center;
+  }
+
+  .button {
+    border: none;
+    color: white;
+    padding: 15px 25px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #start {
+    background-color: rgb(60, 179, 113)
+  }
+
+  #start:hover {
+    background-color: rgb(60, 179, 113, 0.7);
+  }
+
+  #end {
+    background-color: rgb(255, 99, 71);
+  }
+
+  #end:hover {
+    background-color: rgb(255, 99, 71, 0.7);
+  }
+</style>
 
 </html>

@@ -1,4 +1,4 @@
-# emotionai
+# joyOS
 Neural networks for face and emotion detection
 
 ## To set up the application:
@@ -9,4 +9,4 @@ Neural networks for face and emotion detection
 
 ## To run the application:
 1. `. venv/bin/activate` to activate the virtual environment if not already activated
-2. `python3 real_time_emotion.py` to run the app
+2. `python3 main.py` to run the app
