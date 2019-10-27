@@ -1,5 +1,9 @@
+# Original code
 numpy
 opencv-python
 keras
 imutils
 tensorflow
+
+# Flask
+flask
