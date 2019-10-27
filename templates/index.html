@@ -18,12 +18,6 @@
   
   <h2>Video Feed</h2>
   <img id="video" src="{{ url_for('video_feed') }}">
-  <br>
-  <h2>Log:</h2>
-  <textarea rows="20" cols="60"> </textarea>
-  <br> <br> <br>
-  <button class="button" id="start">Start Session</button>
-  <button class="button" id="end">Kill Joy</button>
 </body>
 
 <style>
@@ -100,35 +94,6 @@
   .input-bar:focus::-webkit-input-placeholder {
   	transition: opacity 0.5s ease-in-out;
   	opacity: 0;
-  }
-
-  input {
-    text-align: center;
-  }
-
-  .button {
-    border: none;
-    color: white;
-    padding: 15px 25px;
-    text-align: center;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  #start {
-    background-color: rgb(60, 179, 113)
-  }
-
-  #start:hover {
-    background-color: rgb(60, 179, 113, 0.7);
-  }
-
-  #end {
-    background-color: rgb(255, 99, 71);
-  }
-
-  #end:hover {
-    background-color: rgb(255, 99, 71, 0.7);
   }
 </style>
 
